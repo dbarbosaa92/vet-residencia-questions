@@ -1,0 +1,59 @@
+:root {
+  --bg: #16241d;
+  --bg-elevated: #1d3226;
+  --surface: #23402f;
+  --surface-hover: #2a4a36;
+  --border: #3c5a45;
+  --border-soft: #2c4636;
+  --text: #f3efdd;
+  --text-muted: #a9c0ab;
+  --text-faint: #6f8a75;
+  --accent: #dcb75c;
+  --accent-strong: #ecc978;
+  --accent-ink: #2a2011;
+  --success: #7bb274;
+  --success-bg: rgba(123, 178, 116, 0.14);
+  --danger: #c15a3a;
+  --danger-bg: rgba(193, 90, 58, 0.14);
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 15% 0%, rgba(220, 183, 92, 0.06), transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(123, 178, 116, 0.05), transparent 45%);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+button { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.mono { font-family: var(--font-mono); }
