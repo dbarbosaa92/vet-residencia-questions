@@ -21,7 +21,15 @@ export default function PracticeView() {
   const [position, setPosition] = useState(0); // total já respondidas
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const bootRef = useRef(false);
+
+  useEffect(() => {
+    document.body.style.overflow = sidebarOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [sidebarOpen]);
 
   useEffect(() => {
     if (bootRef.current) return;
@@ -74,6 +82,7 @@ export default function PracticeView() {
     setSubjectFilter(f);
     localStorage.setItem(FILTER_KEY, f);
     loadNext(position, f);
+    setSidebarOpen(false);
   }
 
   async function handleSelect(optIndex) {
@@ -111,88 +120,119 @@ export default function PracticeView() {
   }
 
   return (
-    <div>
-      <div className="tab-grid" style={{ marginBottom: 18 }}>
-        <button
-          className={`tab-chip ${subjectFilter === "todas" ? "selected" : ""}`}
-          onClick={() => changeFilter("todas")}
-        >
-          Todas as matérias
-        </button>
-        {subjects.map((s) => (
+    <div className="practice-layout">
+      <button
+        className="hamburger-btn"
+        onClick={() => setSidebarOpen(true)}
+        aria-label="Abrir menu de matérias"
+        aria-expanded={sidebarOpen}
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+
+      <div
+        className={`sidebar-backdrop ${sidebarOpen ? "show" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside className={`subject-sidebar ${sidebarOpen ? "open" : ""}`}>
+        <div className="subject-sidebar-head">
+          <span className="field-label">Matérias</span>
           <button
-            key={s}
-            className={`tab-chip ${subjectFilter === s ? "selected" : ""}`}
-            onClick={() => changeFilter(s)}
+            className="sidebar-close"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Fechar menu de matérias"
           >
-            {s}
+            ✕
           </button>
-        ))}
-      </div>
-
-      {loading && !current && (
-        <div className="card empty-state">
-          <p className="muted">Carregando questão…</p>
         </div>
-      )}
+        <nav className="subject-menu">
+          <button
+            className={`subject-menu-item ${subjectFilter === "todas" ? "active" : ""}`}
+            onClick={() => changeFilter("todas")}
+          >
+            Todas as matérias
+          </button>
+          {subjects.map((s) => (
+            <button
+              key={s}
+              className={`subject-menu-item ${subjectFilter === s ? "active" : ""}`}
+              onClick={() => changeFilter(s)}
+            >
+              {s}
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-      {!loading && !current && (
-        <div className="card empty-state">
-          <h3>Sem questões por aqui ainda</h3>
-          <p className="muted">
-            Adicione questões na tabela <code>questions</code> do Supabase para essa matéria.
-          </p>
-        </div>
-      )}
+      <div className="practice-main">
+        {loading && !current && (
+          <div className="card empty-state">
+            <p className="muted">Carregando questão…</p>
+          </div>
+        )}
 
-      {current && (
-        <div className="card">
-          <div className="quiz-progress">
-            <span className="counter mono">Questão nº {position + 1}</span>
-            {current.isReview ? (
-              <span className="subject-tag review-tag">🔁 Revisão</span>
-            ) : (
-              <span className="subject-tag">{current.subject}</span>
+        {!loading && !current && (
+          <div className="card empty-state">
+            <h3>Sem questões por aqui ainda</h3>
+            <p className="muted">
+              Adicione questões na tabela <code>questions</code> do Supabase para essa matéria.
+            </p>
+          </div>
+        )}
+
+        {current && (
+          <div className="card">
+            <div className="quiz-progress">
+              <span className="counter mono">Questão nº {position + 1}</span>
+              {current.isReview ? (
+                <span className="subject-tag review-tag">🔁 Revisão</span>
+              ) : (
+                <span className="subject-tag">{current.subject}</span>
+              )}
+            </div>
+
+            <p className="question-text">{current.text}</p>
+
+            <div className="options">
+              {current.options.map((opt, i) => {
+                let cls = "option";
+                if (selected !== null) {
+                  if (i === current.correct) cls += " correct";
+                  else if (i === selected) cls += " wrong";
+                }
+                return (
+                  <button
+                    key={i}
+                    className={cls}
+                    disabled={selected !== null}
+                    onClick={() => handleSelect(i)}
+                  >
+                    <span className="letter">{LETTERS[i]}</span>
+                    <span>{opt}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {selected !== null && (
+              <div className="feedback-bar">
+                <span className={`feedback-msg ${selected === current.correct ? "correct" : "wrong"}`}>
+                  {selected === current.correct
+                    ? "Certinho! ✓"
+                    : `Não foi dessa vez — a correta é a ${LETTERS[current.correct]}.`}
+                </span>
+                <button className="btn btn-primary" onClick={handleNext} disabled={loading}>
+                  Próxima
+                </button>
+              </div>
             )}
           </div>
-
-          <p className="question-text">{current.text}</p>
-
-          <div className="options">
-            {current.options.map((opt, i) => {
-              let cls = "option";
-              if (selected !== null) {
-                if (i === current.correct) cls += " correct";
-                else if (i === selected) cls += " wrong";
-              }
-              return (
-                <button
-                  key={i}
-                  className={cls}
-                  disabled={selected !== null}
-                  onClick={() => handleSelect(i)}
-                >
-                  <span className="letter">{LETTERS[i]}</span>
-                  <span>{opt}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {selected !== null && (
-            <div className="feedback-bar">
-              <span className={`feedback-msg ${selected === current.correct ? "correct" : "wrong"}`}>
-                {selected === current.correct
-                  ? "Certinho! ✓"
-                  : `Não foi dessa vez — a correta é a ${LETTERS[current.correct]}.`}
-              </span>
-              <button className="btn btn-primary" onClick={handleNext} disabled={loading}>
-                Próxima
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

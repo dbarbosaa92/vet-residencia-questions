@@ -29,6 +29,15 @@ export default function App() {
         </nav>
       </header>
 
+      <p className="header-message">
+        Olá futura residente! Lembre-se sempre:{" "}
+        <em>
+          "Deus não coloca em nosso coração um sonho ou desejo que Ele mesmo
+          não seja capaz de realizar"
+        </em>{" "}
+         Vai dar tudo certo!!!
+      </p>
+
       <div className="vitals-rule" aria-hidden="true" />
 
       {view === "practice" && <PracticeView />}

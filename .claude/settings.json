@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(timeout 12 npm run dev)",
+      "Bash(sleep 2; cat /tmp/vite-dev.log 2>&1)",
+      "Read(//tmp/**)",
+      "Bash(curl -sf http://localhost:5174)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(npx --yes playwright install chromium)",
+      "Bash(npx --yes *)",
+      "Bash(node shot.js)",
+      "Bash(pkill -f \"vite\")"
     ]
   }
 }
