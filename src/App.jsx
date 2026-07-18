@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./App.css";
 import PracticeView from "./components/PracticeView";
+import ExamView from "./components/ExamView";
 import Dashboard from "./components/Dashboard";
 
 export default function App() {
-  const [view, setView] = useState("practice"); // "practice" | "dashboard"
+  const [view, setView] = useState("practice"); // "practice" | "exams" | "dashboard"
 
   return (
     <div className="app">
@@ -19,6 +20,12 @@ export default function App() {
             onClick={() => setView("practice")}
           >
             Praticar
+          </button>
+          <button
+            className={view === "exams" ? "active" : ""}
+            onClick={() => setView("exams")}
+          >
+            Provas
           </button>
           <button
             className={view === "dashboard" ? "active" : ""}
@@ -41,6 +48,7 @@ export default function App() {
       <div className="vitals-rule" aria-hidden="true" />
 
       {view === "practice" && <PracticeView />}
+      {view === "exams" && <ExamView />}
       {view === "dashboard" && <Dashboard />}
     </div>
   );

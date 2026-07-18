@@ -74,6 +74,27 @@ automaticamente. Se ela conseguir esses PDFs por conta própria (ex.
 baixando do portal da VUNESP ou de colegas), me manda que eu formato e
 incluo no banco.
 
+Além dessas, a UFMG publica publicamente os cadernos de prova e gabaritos
+do Programa de Residência Integrada em Medicina Veterinária
+(vet.ufmg.br/pagina/processo-seletivo-residencia/), de vários anos e áreas.
+Foi adicionada a prova **UFMG 2025 — Clínica Médica e Cirúrgica de Grandes
+Animais** (22 das 25 questões originais — 3 foram omitidas por dependerem
+de imagem/radiografia que o app não exibe), rodando
+`sql/seed_ufmg_2025_grandes_animais.sql`. UEL e VUNESP não têm prova nem
+gabarito público disponível; UVV só disponibiliza o gabarito (sem o
+enunciado das questões); UDESC usa prova dissertativa, não de múltipla
+escolha — nenhuma dessas três entrou no banco.
+
+## Modo "Prova completa" (simulados)
+
+Além de Praticar por matéria, dá pra fazer uma prova completa específica
+(ex. "UFPR 2023/2024") na aba **Provas** — sequencial, na ordem original,
+com nota final e detalhamento por matéria ao final. Isso usa duas colunas
+extras em `questions` (`exam_source`, `exam_order`) e uma tabela nova
+`exam_results`. Se seu banco já existia antes dessa funcionalidade, rode
+`sql/migration_02_exams.sql` uma vez (instalações novas já pegam isso
+direto no `schema.sql`).
+
 ## Segurança / privacidade
 
 As policies de RLS deixam a tabela `attempts` aberta para leitura e escrita

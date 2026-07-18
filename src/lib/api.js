@@ -94,3 +94,52 @@ export async function fetchAllAttempts() {
   if (error) throw error;
   return data ?? [];
 }
+
+/** Lista de provas completas disponíveis, com a contagem de questões de cada uma. */
+export async function fetchExams() {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("exam_source")
+    .not("exam_source", "is", null);
+  if (error) throw error;
+
+  const counts = {};
+  data.forEach((r) => {
+    counts[r.exam_source] = (counts[r.exam_source] || 0) + 1;
+  });
+  return Object.entries(counts)
+    .map(([name, total]) => ({ name, total }))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+}
+
+/** Todas as questões de uma prova completa, na ordem original dela. */
+export async function fetchExamQuestions(examSource) {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("*")
+    .eq("exam_source", examSource)
+    .order("exam_order", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
+/** Registra o resultado de um simulado completo. */
+export async function insertExamResult({ examSource, total, correct, bySubject }) {
+  const { error } = await supabase.from("exam_results").insert({
+    exam_source: examSource,
+    total,
+    correct,
+    by_subject: bySubject,
+  });
+  if (error) throw error;
+}
+
+/** Histórico de simulados já feitos (uso pessoal — volume baixo, agrega no cliente). */
+export async function fetchExamHistory() {
+  const { data, error } = await supabase
+    .from("exam_results")
+    .select("exam_source, total, correct, created_at")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}

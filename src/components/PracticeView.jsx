@@ -195,6 +195,10 @@ export default function PracticeView() {
               )}
             </div>
 
+            {current.exam_source && (
+              <p className="exam-source-hint mono">{current.exam_source}</p>
+            )}
+
             <p className="question-text">{current.text}</p>
 
             <div className="options">

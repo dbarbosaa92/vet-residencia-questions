@@ -341,6 +341,31 @@
   min-width: 0;
 }
 
+/* ---------- Provas completas (simulados) ---------- */
+.exam-list {
+  display: grid;
+  gap: 14px;
+}
+
+.exam-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.exam-card-head h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 0;
+}
+
+.exam-best {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+}
+
 .qty-grid {
   display: flex;
   gap: 8px;
@@ -376,6 +401,13 @@
   font-family: var(--font-mono);
   font-size: 12.5px;
   color: var(--text-faint);
+}
+
+.exam-source-hint {
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+  margin: -6px 0 14px;
 }
 
 /* ---------- Quiz screen ---------- */
